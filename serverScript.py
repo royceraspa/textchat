@@ -18,13 +18,12 @@ def handle_client(client_socket, username):
 
 def broadcast(message, sender_socket):
     for client_socket in clients:
-        # Send the message to all clients except the sender
-        if client_socket != sender_socket:
-            try:
-                client_socket.send(message.encode('utf-8'))
-            except:
-                # Remove the client if unable to send the message
-                remove_client(client_socket)
+        # Send the message to all clients including the sender
+        try:
+            client_socket.send(message.encode('utf-8'))
+        except:
+            # Remove the client if unable to send the message
+            remove_client(client_socket)
 
 def remove_client(client_socket):
     if client_socket in clients:
