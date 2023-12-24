@@ -7,14 +7,13 @@ def receive_messages(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            print(message)
+            print(f"{username}> {message}")
         except:
             break
 
 def start_client():
-    # Get user input for username and password
+    # Get user input for username
     username = input("Enter your username: ")
-    password = input("Enter the server password: ")
 
     # Create a socket
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,12 +21,8 @@ def start_client():
     # Connect to the server
     client.connect(('10.0.0.171', 5555))
 
-    # Send the password to the server
-    client.send(password.encode('utf-8'))
-
-    # Receive the server's confirmation message
-    confirmation_message = client.recv(1024).decode('utf-8')
-    print(confirmation_message)
+    # Send the username to the server
+    client.send(username.encode('utf-8'))
 
     # Create a separate thread to receive messages
     receive_thread = threading.Thread(target=receive_messages, args=(client, username))
@@ -40,7 +35,7 @@ def start_client():
             break
         client.send(message.encode('utf-8'))
 
-    # Close the connection when exiting the chat
+    # Close the connection
     client.close()
 
 if __name__ == "__main__":
