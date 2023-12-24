@@ -21,13 +21,6 @@ def start_client():
     # Connect to the server
     client.connect(('10.0.0.171', 5555))
 
-    # Send the server password to the server
-    client.send(server_password.encode('utf-8'))
-
-    # Receive the server's confirmation message
-    confirmation_message = client.recv(1024).decode('utf-8')
-    print(confirmation_message)
-
     # Send the username to the server
     client.send(username.encode('utf-8'))
 
@@ -37,7 +30,7 @@ def start_client():
 
     while True:
         # Get user input and send messages
-        message = input()
+        message = input(f"{username}> ")
         if message.lower() == 'exit':
             break
         client.send(message.encode('utf-8'))
