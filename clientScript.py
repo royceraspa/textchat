@@ -19,7 +19,7 @@ def start_client():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect to the server
-    client.connect(('your_server_ip', 5555))
+    client.connect(('10.0.0.171', 5555))
 
     # Send the username to the server
     client.send(username.encode('utf-8'))
