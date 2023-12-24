@@ -16,7 +16,7 @@ def handle_client(client_socket, username):
             break
 
 def broadcast(message, sender_socket):
-    for client_socket in clients:
+    for client_socket, client_username in clients.items():
         # Send the message to all clients except the sender
         if client_socket != sender_socket:
             try:
@@ -36,7 +36,7 @@ def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to a specific address and port
-    server.bind(('10.0.0.171', 5555))
+    server.bind(('0.0.0.0', 5555))
 
     # Listen for incoming connections
     server.listen()
