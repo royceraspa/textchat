@@ -2,6 +2,7 @@ import socket
 import threading
 
 clients = {}  # Dictionary to store connected clients
+password = "your_password"  # Set your desired password here
 
 def handle_client(client_socket, username):
     while True:
@@ -36,7 +37,7 @@ def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to a specific address and port
-    server.bind(('YOUR_IP', 5555))
+    server.bind(('0.0.0.0', 5555))  # Allow connections from any IP
 
     # Listen for incoming connections
     server.listen()
@@ -48,16 +49,29 @@ def start_server():
         client_socket, client_address = server.accept()
         print(f"Connected to {client_address}")
 
-        # Get the username from the connected client
-        username = client_socket.recv(1024).decode('utf-8')
-        print(f"{username} has joined the chat.")
+        # Get the password from the connected client
+        entered_password = client_socket.recv(1024).decode('utf-8')
 
-        # Add the client to the dictionary
-        clients[client_socket] = username
+        if entered_password == password:
+            # Password is correct, proceed with user authentication
 
-        # Create a separate thread to handle the client's messages
-        client_thread = threading.Thread(target=handle_client, args=(client_socket, username))
-        client_thread.start()
+            # Get the username from the connected client
+            username = client_socket.recv(1024).decode('utf-8')
+            print(f"{username} has joined the chat.")
+
+            # Add the client to the dictionary
+            clients[client_socket] = username
+
+            # Send a confirmation message to the client
+            client_socket.send("Welcome to the chat!".encode('utf-8'))
+
+            # Create a separate thread to handle the client's messages
+            client_thread = threading.Thread(target=handle_client, args=(client_socket, username))
+            client_thread.start()
+        else:
+            # Incorrect password, close the connection
+            print("Incorrect password. Closing connection.")
+            client_socket.close()
 
 if __name__ == "__main__":
     start_server()
