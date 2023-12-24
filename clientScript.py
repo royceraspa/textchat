@@ -7,7 +7,7 @@ def receive_messages(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            print(f"\r{message}\n{username}> ", end="", flush=True)
+            print(f"\n{message}\n{username}> ", end="", flush=True)
         except:
             break
 
@@ -33,8 +33,8 @@ def start_client():
         message = input(f"{username}> ")
         if message.lower() == 'exit':
             break
-        print(f"\033[F{message}\n{username}> ", end="", flush=True)
-        client.send(message.encode('utf-8"))
+        print(f"\r{message}", end="", flush=True)
+        client.send(message.encode('utf-8'))
 
     # Close the connection
     client.close()
