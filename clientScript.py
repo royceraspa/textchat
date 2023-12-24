@@ -7,7 +7,7 @@ def receive_messages(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            print(f"\n{message}\n{username}> ", end="", flush=True)
+            print(f"\r{message}\n{username}> ", end="", flush=True)
         except:
             break
 
@@ -19,7 +19,7 @@ def start_client():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect to the server
-    client.connect(('0.0.0.0', 5555))
+    client.connect(('10.0.0.171', 5555))
 
     # Send the username to the server
     client.send(username.encode('utf-8'))
@@ -33,7 +33,8 @@ def start_client():
         message = input(f"{username}> ")
         if message.lower() == 'exit':
             break
-        client.send(message.encode('utf-8'))
+        print(f"\033[F{message}\n{username}> ", end="", flush=True)
+        client.send(message.encode('utf-8"))
 
     # Close the connection
     client.close()
