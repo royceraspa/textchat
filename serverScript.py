@@ -2,7 +2,6 @@ import socket
 import threading
 
 clients = {}  # Dictionary to store connected clients
-password = "royce"  # Set your desired password here
 
 def handle_client(client_socket, username):
     while True:
@@ -10,20 +9,19 @@ def handle_client(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            formatted_message = f"{username}> {message}"
-            print(formatted_message)
-            broadcast(formatted_message, client_socket)
+            broadcast(f"{username}> {message}", client_socket)
         except:
             break
 
 def broadcast(message, sender_socket):
     for client_socket in clients:
-        # Send the message to all clients including the sender
-        try:
-            client_socket.send(message.encode('utf-8'))
-        except:
-            # Remove the client if unable to send the message
-            remove_client(client_socket)
+        # Send the message to all clients except the sender
+        if client_socket != sender_socket:
+            try:
+                client_socket.send(message.encode('utf-8'))
+            except:
+                # Remove the client if unable to send the message
+                remove_client(client_socket)
 
 def remove_client(client_socket):
     if client_socket in clients:
@@ -48,29 +46,16 @@ def start_server():
         client_socket, client_address = server.accept()
         print(f"Connected to {client_address}")
 
-        # Get the password from the connected client
-        entered_password = client_socket.recv(1024).decode('utf-8')
+        # Get the username from the connected client
+        username = client_socket.recv(1024).decode('utf-8')
+        print(f"{username} has joined the chat.")
 
-        if entered_password == password:
-            # Password is correct, proceed with user authentication
+        # Add the client to the dictionary
+        clients[client_socket] = username
 
-            # Get the username from the connected client
-            username = client_socket.recv(1024).decode('utf-8')
-            print(f"{username} has joined the chat.")
-
-            # Add the client to the dictionary
-            clients[client_socket] = username
-
-            # Send a confirmation message to the client
-            client_socket.send("Welcome to the chat!".encode('utf-8'))
-
-            # Create a separate thread to handle the client's messages
-            client_thread = threading.Thread(target=handle_client, args=(client_socket, username))
-            client_thread.start()
-        else:
-            # Incorrect password, close the connection
-            print("Incorrect password. Closing connection.")
-            client_socket.close()
+        # Create a separate thread to handle the client's messages
+        client_thread = threading.Thread(target=handle_client, args=(client_socket, username))
+        client_thread.start()
 
 if __name__ == "__main__":
     start_server()
