@@ -7,7 +7,7 @@ def receive_messages(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            print(f"{username}> {message}")
+            print(f"{message}")
         except:
             break
 
