@@ -2,7 +2,7 @@ import socket
 import threading
 
 clients = {}  # Dictionary to store connected clients
-password = "your_password"  # Set your desired password here
+password = "royce"  # Set your desired password here
 
 def handle_client(client_socket, username):
     while True:
@@ -37,7 +37,7 @@ def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to a specific address and port
-    server.bind(('0.0.0.0', 5555))  # Allow connections from any IP
+    server.bind(('10.0.0.171', 5555))  # Allow connections from any IP
 
     # Listen for incoming connections
     server.listen()
