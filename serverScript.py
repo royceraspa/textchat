@@ -9,7 +9,9 @@ def handle_client(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            broadcast(f"{username}> {message}", client_socket)
+            formatted_message = f"{username}> {message}"
+            print(formatted_message)
+            broadcast(formatted_message, client_socket)
         except:
             break
 
@@ -34,7 +36,7 @@ def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to a specific address and port
-    server.bind(('your_server_ip', 5555))
+    server.bind(('YOUR_IP', 5555))
 
     # Listen for incoming connections
     server.listen()
