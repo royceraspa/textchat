@@ -7,7 +7,7 @@ def receive_messages(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            print(f"{username}> {message}")
+            print(message)
         except:
             break
 
@@ -20,6 +20,13 @@ def start_client():
 
     # Connect to the server
     client.connect(('10.0.0.171', 5555))
+
+    # Send the server password to the server
+    client.send(server_password.encode('utf-8'))
+
+    # Receive the server's confirmation message
+    confirmation_message = client.recv(1024).decode('utf-8')
+    print(confirmation_message)
 
     # Send the username to the server
     client.send(username.encode('utf-8'))
