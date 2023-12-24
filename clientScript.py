@@ -1,4 +1,5 @@
 import socket
+import threading
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
@@ -24,6 +25,43 @@ def receive_messages(client_socket, private_key):
         except Exception as e:
             print(f"Error receiving message: {e}")
             break
+
+def encrypt_message(message, public_key):
+    # Encrypt the message using the recipient's public key
+    encrypted_message = public_key.encrypt(
+        message.encode('utf-8'),
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    return encrypted_message
+
+def decrypt_message(encrypted_message, private_key):
+    # Decrypt the message using the private key
+    decrypted_message = private_key.decrypt(
+        encrypted_message,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    ).decode('utf-8')
+    return decrypted_message
+
+def generate_key_pair():
+    # Generate an RSA key pair for encryption/decryption
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+        backend=default_backend()
+    )
+
+    # Get the public key for sharing with the server
+    public_key = private_key.public_key()
+
+    return private_key, public_key
 
 def start_client():
     # Get user input for username and password
@@ -73,4 +111,17 @@ def start_client():
         encrypted_message = server_public_key.encrypt(
             message.encode('utf-8'),
             padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.S
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+
+        # Send the encrypted message to the server
+        client.send(encrypted_message)
+
+    # Close the connection when exiting the chat
+    client.close()
+
+if __name__ == "__main__":
+    start_client()
