@@ -9,7 +9,9 @@ def handle_client(client_socket, username):
             message = client_socket.recv(1024).decode('utf-8')
             if not message:
                 break
-            broadcast(f"{username}> {message}", client_socket)
+            formatted_message = f"{username}> {message}"
+            print(formatted_message)
+            broadcast(formatted_message, client_socket)
         except:
             break
 
