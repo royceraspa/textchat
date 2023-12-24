@@ -37,7 +37,7 @@ def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to a specific address and port
-    server.bind(('10.0.0.171', 5555))  # Allow connections from any IP
+    server.bind(('10.0.0.171', 5555))
 
     # Listen for incoming connections
     server.listen()
