@@ -33,6 +33,7 @@ def start_client():
         message = input(f"{username}> ")
         if message.lower() == 'exit':
             break
+        print(f"\r{message}", end="", flush=True)
         client.send(message.encode('utf-8'))
 
     # Close the connection
